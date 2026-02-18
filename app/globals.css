@@ -7,40 +7,142 @@
     @apply bg-dark-bg text-white;
     background: linear-gradient(135deg, #0D0D0D 0%, #1a0a1a 50%, #0D0D0D 100%);
     min-height: 100vh;
+    transition: --fire-orange 0.5s ease, --fire-coral 0.5s ease, --twitch-purple 0.5s ease;
   }
 }
 
 @layer components {
   .glass-card {
     @apply backdrop-blur-xl bg-white/5 border border-white/10;
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
-  
+
   .link-button {
     @apply glass-card relative overflow-hidden transition-all duration-300;
   }
-  
+
+  /* Base gradient overlay - subtle default state */
   .link-button::before {
     content: '';
     @apply absolute inset-0 opacity-0 transition-opacity duration-300;
     background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(145, 70, 255, 0.2));
   }
-  
+
   .link-button:hover::before {
     @apply opacity-100;
   }
-  
-  .link-button:hover {
-    @apply transform -translate-y-1 border-fire-orange/30;
-    box-shadow: 
-      0 12px 40px rgba(255, 107, 53, 0.2),
-      0 0 20px rgba(255, 107, 53, 0.1);
+
+  /* Glowing animated border effect on hover */
+  .link-button::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(90deg, #FF6B35, #9146FF, #FF8C69, #B35CFF, #FF6B35);
+    background-size: 400% 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
   }
-  
+
+  .link-button:hover::after {
+    opacity: 1;
+    animation: gradient-shift 2s linear infinite;
+  }
+
+  /* Hover state with enhanced glow effects */
+  .link-button:hover {
+    @apply transform -translate-y-1 border-transparent;
+    box-shadow: 
+      0 12px 40px rgba(255, 107, 53, 0.25), 
+      0 0 30px rgba(255, 107, 53, 0.2),
+      0 0 60px rgba(145, 70, 255, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  /* Animated shine sweep effect */
+  .link-button .shine-effect {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
+    transform: skewX(-20deg);
+    pointer-events: none;
+  }
+
+  .link-button:hover .shine-effect {
+    animation: shine-sweep 1.5s ease-in-out infinite;
+  }
+
+  /* Icon glow container with dynamic filter */
+  .link-button .icon-glow {
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+
+  .link-button:hover .icon-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.8)) 
+                drop-shadow(0 0 16px rgba(145, 70, 255, 0.6));
+  }
+
+  /* Platform-specific hover colors */
+  .link-button[data-platform="twitch"]:hover { --glow-color: #9146FF; --glow-color-secondary: #B86CFF; }
+  .link-button[data-platform="youtube"]:hover { --glow-color: #FF0000; --glow-color-secondary: #FF6B35; }
+  .link-button[data-platform="instagram"]:hover { --glow-color: #E1306C; --glow-color-secondary: #F77737; }
+  .link-button[data-platform="tiktok"]:hover { --glow-color: #00F2EA; --glow-color-secondary: #FF0050; }
+  .link-button[data-platform="twitter"]:hover { --glow-color: #1DA1F2; --glow-color-secondary: #0D8BD9; }
+  .link-button[data-platform="facebook"]:hover { --glow-color: #1877F2; --glow-color-secondary: #166fe5; }
+
+  .link-button[data-platform]:hover .icon-glow {
+    filter: drop-shadow(0 0 8px var(--glow-color, #FF6B35)) 
+                drop-shadow(0 0 16px var(--glow-color-secondary, #9146FF));
+  }
+
   .fire-glow {
     text-shadow: 0 0 10px rgba(255, 107, 53, 0.5), 0 0 20px rgba(255, 107, 53, 0.3);
+  }
+}
+
+/* Animated gradient border keyframes */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+
+/* Shine sweep animation */
+@keyframes shine-sweep {
+  0% { left: -100%; }
+  50%, 100% { left: 200%; }
+}
+
+/* Pulse glow animation */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 
+      0 12px 40px rgba(255, 107, 53, 0.25), 
+      0 0 30px rgba(255, 107, 53, 0.2),
+      0 0 60px rgba(145, 70, 255, 0.15);
+  }
+  50% {
+    box-shadow: 
+      0 12px 50px rgba(255, 107, 53, 0.4), 
+      0 0 40px rgba(255, 107, 53, 0.35),
+      0 0 80px rgba(145, 70, 255, 0.25);
   }
 }
 
@@ -48,16 +150,55 @@
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: #0D0D0D;
 }
-
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #FF6B35, #9146FF);
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #FF8C69, #B86CFF);
+}
+
+/* ==== STREAMER MODE ==== */
+html.streamer-mode {
+  --fire-orange: #F59E0B;
+  --fire-coral: #FCD34D;
+  --twitch-purple: #F59E0B;
+}
+
+html.streamer-mode body {
+  background: linear-gradient(135deg, #1a1005 0%, #2d1a08 50%, #1a1005 100%);
+}
+
+html.streamer-mode .glass-card {
+  background: rgba(251, 191, 36, 0.06);
+  border-color: rgba(251, 191, 36, 0.2);
+}
+
+html.streamer-mode .link-button::before {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.3));
+}
+
+html.streamer-mode .link-button::after {
+  background: linear-gradient(90deg, #F59E0B, #FCD34D, #FBBF24, #F59E0B, #FCD34D);
+  background-size: 400% 100%;
+}
+
+html.streamer-mode .link-button:hover {
+  box-shadow: 0 12px 40px rgba(251, 191, 36, 0.35),
+              0 0 30px rgba(251, 191, 36, 0.25),
+              0 0 60px rgba(245, 158, 11, 0.2);
+}
+
+html.streamer-mode .link-button:hover .icon-glow {
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.9)) 
+          drop-shadow(0 0 16px rgba(245, 158, 11, 0.7));
+}
+
+html.streamer-mode h1,
+html.streamer-mode h2,
+html.streamer-mode h3 {
+  color: #FCD34D !important;
 }
