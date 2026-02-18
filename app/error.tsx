@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
-import { Gamepad2, AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react'
 import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { AlertTriangle, RefreshCcw, Home, Bomb } from 'lucide-react'
 
 export default function Error({
   error,
@@ -11,74 +11,107 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
+  const router = useRouter()
+
   useEffect(() => {
-    // Log error to console for debugging
-    console.error('Error boundary caught:', error)
+    console.error('💥 Error crítico:', error)
   }, [error])
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
-      <div className="w-full max-w-md text-center">
-        {/* Error Icon */}
-        <div className="mb-8 relative">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 bg-[#FF6B35] blur-[60px] opacity-30"></div>
-            <div className="relative glass-card rounded-full p-8 border-[#FF6B35]/30">
-              <AlertTriangle className="w-16 h-16 text-[#FF6B35]" />
-            </div>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-8 relative overflow-hidden">
+      {/* Explosion particles effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-3 h-3 rounded-full animate-explode"
+            style={{
+              left: '50%',
+              top: '40%',
+              backgroundColor: i % 2 === 0 ? '#FF6B35' : '#9146FF',
+              animationDelay: `${i * 0.1}s`,
+              transform: `rotate(${i * 45}deg) translateX(${50 + i * 20}px)`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 text-center">
+        {/* 500 Badge */}
+        <div className="mb-8 relative inline-block">
+          <div className="absolute inset-0 bg-red-500/30 blur-3xl rounded-full" />
+          <h1 className="relative text-7xl md:text-8xl font-black font-display text-white glitch-text-red">
+            500
+          </h1>
+        </div>
+
+        {/* Explosion Icon */}
+        <div className="mb-6 flex justify-center">
+          <div className="relative animate-pulse">
+            <Bomb size={64} className="text-red-400" />
+            <div className="absolute inset-0 bg-red-500/40 blur-xl rounded-full" />
           </div>
         </div>
 
-        {/* Error Code */}
-        <h1 className="text-7xl md:text-8xl font-black mb-4 tracking-tight" style={{ fontFamily: 'var(--font-orbitron), sans-serif' }}>
-          <span className="bg-gradient-to-r from-[#FF6B35] to-[#9146FF] bg-clip-text text-transparent">
-            500
-          </span>
-        </h1>
-
-        {/* Error Message */}
-        <h2 className="text-xl md:text-2xl font-bold mb-4 text-white" style={{ fontFamily: 'var(--font-orbitron), sans-serif' }}>
-          ERROR DEL SERVIDOR
+        {/* Title */}
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mb-4">
+          <span className="text-red-400">💥</span> Server Exploded <span className="text-red-400">💥</span>
         </h2>
 
-        {/* Description */}
-        <p className="text-gray-400 mb-8 text-sm md:text-base">
-          ¡Ups! Algo salió mal en el servidor. Nuestros técnicos gamers están trabajando en ello.
+        {/* Message */}
+        <p className="text-gray-400 max-w-lg mx-auto mb-6 text-lg">
+          Algo se rompió peor que mi KDA en ranked.
+          <br />
+          <span className="text-fire-orange">Ni F8 va a salvar esto.</span>
         </p>
 
-        {/* Glitch Effect Text */}
-        <div className="mb-8 text-[#FF6B35]/60 text-xs tracking-widest uppercase">
-          [ ERROR: INTERNAL_SERVER_ERROR ]
-        </div>
+        {/* Error details (collapsible) */}
+        {error.digest && (
+          <div className="mb-6 p-3 bg-red-500/10 border border-red-500/20 rounded-lg inline-block">
+            <p className="text-xs text-red-400 font-mono">Error ID: {error.digest}</p>
+          </div>
+        )}
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        {/* Action buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => reset()}
-            className="inline-flex items-center justify-center gap-2 glass-card px-6 py-3 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 border-[#FF6B35]/30 hover:border-[#FF6B35]/50 hover:shadow-[0_0_30px_rgba(255,107,53,0.3)]"
+            className="glass-card px-6 py-3 rounded-xl flex items-center justify-center gap-2 border-red-500/30 hover:bg-red-500/20 transition-all hover:-translate-y-1 group"
           >
-            <RefreshCw className="w-5 h-5" />
-            <span>Intentar de nuevo</span>
+            <RefreshCcw size={20} className="group-hover:rotate-180 transition-transform duration-500" />
+            <span>Reintentar</span>
           </button>
-          
-          <Link 
-            href="/"
-            className="inline-flex items-center justify-center gap-2 glass-card px-6 py-3 rounded-full text-white font-medium transition-all duration-300 hover:scale-105 border-[#9146FF]/30 hover:border-[#9146FF]/50 hover:shadow-[0_0_30px_rgba(145,70,255,0.3)]"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Volver al inicio</span>
-          </Link>
-        </div>
 
-        {/* Decorative Elements */}
-        <div className="mt-12 flex justify-center gap-4 opacity-30">
-          <AlertTriangle className="w-6 h-6 text-[#FF6B35]" />
-          <span className="text-gray-500">×</span>
-          <Gamepad2 className="w-6 h-6 text-[#9146FF]" />
-          <span className="text-gray-500">×</span>
-          <AlertTriangle className="w-6 h-6 text-[#FF6B35]" />
+          <a
+            href="/"
+            className="glass-card px-6 py-3 rounded-xl flex items-center justify-center gap-2 bg-fire-orange/20 border-fire-orange/30 hover:bg-fire-orange/30 transition-all hover:-translate-y-1"
+          >
+            <Home size={20} />
+            <span>Refugio seguro</span>
+          </a>
         </div>
       </div>
+
+      {/* CSS animations */}
+      <style jsx>{`
+        @keyframes explode {
+          0% { transform: scale(0) rotate(0deg); opacity: 1; }
+          50% { transform: scale(1.2) rotate(180deg); opacity: 0.8; }
+          100% { transform: scale(0) rotate(360deg); opacity: 0; }
+        }
+        @keyframes glitch-red {
+          0%, 100% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
+          25% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; }
+          50% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
+          75% { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; }
+        }
+        .animate-explode {
+          animation: explode 1.5s ease-out forwards;
+        }
+        .glitch-text-red {
+          animation: glitch-red 0.3s infinite;
+        }
+      `}</style>
     </div>
   )
 }
