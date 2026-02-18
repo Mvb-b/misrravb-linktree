@@ -1,5 +1,6 @@
 import { Profile } from '../components/Profile'
 import { LinkButton } from '../components/LinkButton'
+import { NewsletterButton } from '../components/NewsletterButton'
 import { Footer } from '../components/Footer'
 
 const socialLinks = [
@@ -18,20 +19,24 @@ export default function Home() {
         {/* Profile Section */}
         <Profile 
           name="MisrraVB" 
-          subtitle="Streamer Fracasado" 
+          subtitle="Streamer Fracasado"
           bio="Misrain Sebastián Valencia Bustos | Contenido de streams y gaming"
           avatarUrl="/avatar.jpg"
         />
 
         {/* Links Section */}
         <div className="space-y-3 px-2 mt-2">
+          {/* Newsletter Button - Highlighted */}
+          <NewsletterButton />
+          
+          {/* Social Links */}
           {socialLinks.map((link) => (
-            <LinkButton 
-              key={link.platform} 
-              platform={link.platform} 
-              title={link.title} 
-              url={link.url} 
-              username={link.username} 
+            <LinkButton
+              key={link.platform}
+              platform={link.platform}
+              title={link.title}
+              url={link.url}
+              username={link.username}
             />
           ))}
         </div>

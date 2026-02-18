@@ -6,6 +6,7 @@ import { ThemeToggle } from '../components/ThemeToggle'
 import { VisitorCounterBadge } from '../components/VisitorCounterBadge'
 import { KonamiEasterEgg } from '../components/KonamiEasterEgg'
 import { LiveStatus } from '../components/LiveStatus'
+import { AnalyticsDashboard } from '../components/AnalyticsDashboard'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const orbitron = Orbitron({ 
@@ -61,6 +62,7 @@ export default function RootLayout({
           <ThemeToggle />
           {children}
           <VisitorCounterBadge />
+          <AnalyticsDashboard />
           <KonamiEasterEgg />
         </ThemeProvider>
       </body>

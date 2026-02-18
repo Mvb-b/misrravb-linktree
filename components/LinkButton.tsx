@@ -1,7 +1,7 @@
 'use client'
-
 import { PlatformIcon, SocialPlatform, platformColors } from './Icon'
 import { ExternalLink } from 'lucide-react'
+import { useAnalytics } from '../hooks/useAnalytics'
 
 interface LinkButtonProps {
   platform: SocialPlatform
@@ -20,17 +20,24 @@ const platformLabels: Record<SocialPlatform, string> = {
 }
 
 export function LinkButton({ platform, title, url, username }: LinkButtonProps) {
+  const { trackClick } = useAnalytics()
+
+  const handleClick = () => {
+    trackClick(platform, url)
+  }
+
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      data-platform={platform}
+    <a 
+      href={url} 
+      target="_blank" 
+      rel="noopener noreferrer" 
+      data-platform={platform} 
       className="link-button flex items-center gap-4 p-4 md:p-5 rounded-xl group"
+      onClick={handleClick}
     >
       {/* Shine effect */}
       <span className="shine-effect" />
-      
+
       {/* Icon */}
       <div className={`flex-shrink-0 icon-glow ${platformColors[platform]}`}>
         <PlatformIcon platform={platform} size={28} className="transition-transform duration-300 group-hover:scale-110" />
