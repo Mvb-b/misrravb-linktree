@@ -30,6 +30,7 @@ export function LiveStatus() {
           viewers: 0,
           title: '',
           game: '',
+          thumbnail: '',
           error: 'Failed to fetch',
         })
       } finally {

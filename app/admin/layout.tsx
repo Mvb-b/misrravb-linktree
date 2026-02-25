@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Users, BarChart3, Settings, LogOut } from 'lucide-react';
+import { Users, BarChart3, CreditCard, LogOut } from 'lucide-react';
 import { getCurrentUser } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
@@ -9,13 +9,14 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await getCurrentUser();
-
+  
   if (!user || user.role !== 'admin') {
     redirect('/admin/login');
   }
 
   const navItems = [
     { href: '/admin/users', icon: Users, label: 'Usuarios' },
+    { href: '/admin/payments', icon: CreditCard, label: 'Pagos' },
     { href: '/admin/analytics', icon: BarChart3, label: 'Analytics' },
   ];
 

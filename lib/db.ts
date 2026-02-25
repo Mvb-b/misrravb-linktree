@@ -11,11 +11,29 @@ if (!existsSync(DB_DIR)) {
   mkdirSync(DB_DIR, { recursive: true });
 }
 
-// Create database connection
-const db = new Database(DB_PATH);
+// Lazy database initialization to avoid build errors
+let db: Database.Database | null = null;
 
-// Enable WAL mode for better performance
-db.pragma('journal_mode = WAL');
+function getDb(): Database.Database {
+  if (!db) {
+    // Check if we're in build time (no data dir or special flag)
+    const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
+    if (isBuildTime) {
+      // Return a mock DB for build time
+      throw new Error('Database not available during build');
+    }
+    
+    db = new Database(DB_PATH);
+    db.pragma('journal_mode = WAL');
+  }
+  return db;
+}
+
+export { getDb };
+export default {
+  prepare: (sql: string) => getDb().prepare(sql),
+  exec: (sql: string) => getDb().exec(sql),
+};
 
 // Initialize tables
 export function initDb() {

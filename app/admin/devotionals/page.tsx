@@ -214,4 +214,104 @@ export default function DevotionalsAdmin() {
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
                       <div className="flex flex-col items-center gap-3">
-                        <FileText className="w-12 h-
+                        <FileText className="w-12 h-12 text-gray-600" />
+                        <p>No se encontraron devocionales</p>
+                        {searchQuery && (
+                          <p className="text-sm text-gray-500">
+                            Intenta con otra búsqueda
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredDevotionals.map((devotional) => (
+                    <tr
+                      key={devotional.id}
+                      className={devotional.deleted_at ? 'opacity-50' : ''}
+                    >
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-3">
+                          {devotional.deleted_at && (
+                            <span className="text-xs bg-red-500/20 text-red-400 px-2 py-1 rounded">
+                              Eliminado
+                            </span>
+                          )}
+                          <span className={devotional.deleted_at ? 'line-through' : ''}>
+                            {devotional.title}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2 text-gray-400">
+                          <Calendar className="w-4 h-4" />
+                          {formatDate(devotional.devotional_date)}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                            devotional.status === 'published'
+                              ? 'bg-green-500/20 text-green-400'
+                              : 'bg-yellow-500/20 text-yellow-400'
+                          }`}
+                        >
+                          {devotional.status === 'published' ? 'Publicado' : 'Borrador'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-gray-400">
+                        {formatDate(devotional.updated_at)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-2">
+                          {devotional.deleted_at ? (
+                            <button
+                              onClick={() => handleDelete(devotional.id, 'restore')}
+                              className="p-2 hover:bg-green-500/20 rounded-lg transition-colors text-green-400"
+                              title="Restaurar"
+                            >
+                              <RotateCcw className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <>
+                              <Link
+                                href={`/admin/devotionals/${devotional.id}/edit`}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-gray-400 hover:text-white"
+                                title="Editar"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Link>
+                              <button
+                                onClick={() => handleDelete(devotional.id, 'soft')}
+                                className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-gray-400 hover:text-red-400"
+                                title="Eliminar"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-sm text-gray-400">
+          <p>
+            Mostrando {filteredDevotionals.length} de {devotionals.length} devocionales
+          </p>
+          {showDeleted && (
+            <p className="text-red-400">
+              {devotionals.filter((d) => d.deleted_at).length} eliminados
+            </p>
+          )}
+        </div>
+      </div>
+    </main>
+  );
+}

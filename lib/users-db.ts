@@ -156,9 +156,9 @@ export function getUsers(filters?: UserFilters, limit: number = 100, offset: num
     FROM users ${whereClause}
     ORDER BY created_at DESC
     LIMIT ? OFFSET ?
-  `).run(...params, limit, offset) as { users: UserPublic[] };
+  `).all(...params, limit, offset) as unknown as UserPublic[];
 
-  return { users: users as unknown as UserPublic[], total: countResult.total };
+  return { users, total: countResult.total };
 }
 
 export function updateUser(id: number, input: UpdateUserInput): UserPublic | null {
